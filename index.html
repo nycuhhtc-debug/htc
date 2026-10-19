@@ -6,12 +6,13 @@
 :root{font-family:system-ui,-apple-system,'Noto Sans TC',sans-serif;color:#312b28;background:#fff8f0}*{box-sizing:border-box}body{margin:0}header{background:linear-gradient(125deg,#f66a35,#f6a348);color:white;padding:44px 18px 35px;text-align:center}header h1{font-size:clamp(30px,5vw,49px);margin:0 0 8px}header p{margin:0;opacity:.95}.wrap{max-width:860px;margin:26px auto;padding:0 16px 50px}.panel{background:white;border-radius:20px;box-shadow:0 8px 30px #8d4a2020;padding:24px;margin-bottom:18px}h2{font-size:20px;margin:0 0 18px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.field{display:flex;flex-direction:column;gap:7px}label{font-size:14px;font-weight:700}input,select,button{font:inherit}input,select{width:100%;border:1px solid #e2d7ce;border-radius:12px;padding:12px;background:white;color:#312b28}button{border:0;border-radius:12px;padding:12px 17px;cursor:pointer;font-weight:700;background:#f56d3a;color:white}button:hover{filter:brightness(.96)}button:disabled{opacity:.5;cursor:not-allowed}.muted{color:#786d65;font-size:13px;line-height:1.7}.actions{display:flex;gap:10px;flex-wrap:wrap}.outline{background:#fff1e7;color:#ad4b22}.row{display:flex;gap:10px;align-items:end}.row input{flex:1;min-width:0}.status{padding:12px 14px;background:#fff3e5;border-radius:12px;font-size:14px;margin-top:14px;line-height:1.6}.hidden{display:none!important}.count{font-size:15px;color:#5f554f}.roulette{min-height:145px;display:flex;justify-content:center;align-items:center;text-align:center;font-size:clamp(23px,4vw,36px);font-weight:800;background:linear-gradient(135deg,#fff4e5,#ffdfbd);border:2px dashed #f6a05e;border-radius:18px;padding:22px;margin:18px 0}.result{border:1px solid #f1dfd0;border-radius:16px;padding:20px;margin-top:16px}.result h3{font-size:25px;margin:0 0 12px}.chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.chip{background:#fff1e7;color:#8c4d2d;border-radius:999px;padding:5px 10px;font-size:12px}.info{margin:8px 0;line-height:1.6;overflow-wrap:anywhere}a.btn{display:inline-block;text-decoration:none;background:#f56d3a;color:white;border-radius:12px;padding:12px 16px;font-weight:700}.footer{text-align:center;color:#82756c;font-size:12px;line-height:1.8;margin-top:22px}a{color:#ad4b22}@media(max-width:600px){.grid{grid-template-columns:1fr}.panel{padding:18px}.row{flex-wrap:wrap}.row button{width:100%}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
 </style>
 </head>
-<body><header><h1>🍜 今天吃什麼？</h1><p>Food Roulette · 北台灣版 · 即時搜尋＋可信資料備援</p></header>
+<body><header><h1>🍜 今天吃什麼？</h1><p>Food Roulette · 全台即時搜尋＋台北官方資料備援</p></header>
 <main class="wrap">
 <section class="panel"><h2>📍 1. 選擇搜尋位置</h2><div class="actions"><button id="gps">📍 使用目前位置</button><button id="manualMode" class="outline">🔎 手動搜尋地點</button></div><div id="manual" class="hidden" style="margin-top:14px"><label for="place">輸入地址或地標</label><div class="row" style="margin-top:7px"><input id="place" placeholder="例如：台北車站、宜蘭火車站"><button id="findPlace">搜尋地點</button></div><div id="placeResults" style="margin-top:10px"></div></div><div id="locationStatus" class="status">尚未設定位置。請使用 GPS 或手動搜尋地點。</div></section>
-<section class="panel"><h2>🍽️ 2. 設定餐廳條件</h2><div class="grid"><div class="field"><label for="radius">搜尋距離</label><select id="radius"><option value="500">500 公尺</option><option value="1000" selected>1 公里</option><option value="2000">2 公里</option><option value="3000">3 公里</option><option value="5000">5 公里</option></select></div><div class="field"><label for="cuisine">料理類型</label><select id="cuisine"><option value="all">不限料理</option><option value="chinese">中式／台式</option><option value="japanese">日式</option><option value="korean">韓式</option><option value="western">西式</option><option value="hotpot">火鍋</option><option value="other">其他／未分類</option></select></div><div class="field"><label for="budget">預算（每人）</label><select id="budget"><option value="all">不限</option><option value="0-200">NT$200 以下</option><option value="201-400">NT$201–400</option><option value="401-800">NT$401–800</option><option value="801-999999">NT$801 以上</option></select></div><div class="field"><label for="open">營業狀態</label><select id="open"><option value="all">不限</option><option value="prefer">優先營業中（未知仍可抽）</option></select></div></div><p class="muted">預算與營業時間採彈性篩選：資料未知的餐廳仍可能入選，並會清楚標示。OpenStreetMap 的價格資料通常不完整。全台灣皆可搜尋；即時服務繁忙時，優先使用本瀏覽器先前搜尋成功的餐廳快取。少量經核對的公開備援地點僅涵蓋桃園部分區域，不會虛構餐廳。</p><button id="search">🔍 搜尋附近餐廳</button><div id="searchStatus" class="status hidden" role="status"></div></section>
+<section class="panel"><h2>🍽️ 2. 設定餐廳條件</h2><div class="grid"><div class="field"><label for="radius">搜尋距離</label><select id="radius"><option value="500">500 公尺</option><option value="1000" selected>1 公里</option><option value="2000">2 公里</option><option value="3000">3 公里</option><option value="5000">5 公里</option></select></div><div class="field"><label for="cuisine">料理類型</label><select id="cuisine"><option value="all">不限料理</option><option value="chinese">中式／台式</option><option value="japanese">日式</option><option value="korean">韓式</option><option value="western">西式</option><option value="hotpot">火鍋</option><option value="other">其他／未分類</option></select></div><div class="field"><label for="budget">預算（每人）</label><select id="budget"><option value="all">不限</option><option value="0-200">NT$200 以下</option><option value="201-400">NT$201–400</option><option value="401-800">NT$401–800</option><option value="801-999999">NT$801 以上</option></select></div><div class="field"><label for="open">營業狀態</label><select id="open"><option value="all">不限</option><option value="prefer">優先營業中（未知仍可抽）</option></select></div></div><p class="muted">預算與營業時間採彈性篩選：資料未知的餐廳仍可能入選，並會清楚標示。OpenStreetMap 的價格資料通常不完整。全台灣皆可搜尋；即時服務繁忙時，優先使用本瀏覽器先前搜尋成功的餐廳快取。如匯入台北市政府官方 CSV，即時服務失敗時仍可從附近的登記業者抽選；資料不保證目前營業。</p><button id="search">🔍 搜尋附近餐廳</button><div id="searchStatus" class="status hidden" role="status"></div></section>
+<section class="panel"><h2>🗂️ 台北市官方餐飲資料備援</h2><p class="muted">首次使用時，可下載臺北市政府「設址臺北市所營事業含餐館業清冊」CSV，再匯入一次。資料儲存在這台裝置的瀏覽器，之後即使 Overpass 故障，仍可從附近的登記業者抽選。<strong>注意：登記含餐館業不代表目前實際營業或有提供餐飲，出發前務必查證。</strong></p><div class="actions"><a class="btn" href="https://data.gov.taipei/dataset/detail?id=178abc4e-fe32-4fc9-af3a-7baf1c15082c" target="_blank" rel="noopener">📥 下載台北市政府 CSV</a><button id="importBtn" type="button" class="outline">📂 匯入 CSV</button><button id="clearImport" type="button" class="outline">清除已匯入資料</button></div><input type="file" id="csvFile" accept=".csv,text/csv" class="hidden"><div id="importStatus" class="status">尚未匯入官方餐飲資料。這不影響即時搜尋功能。</div></section>
 <section class="panel"><h2>🎲 3. 幫我決定！</h2><p id="count" class="count">請先搜尋餐廳。</p><div id="roulette" class="roulette" aria-live="polite">今天想吃什麼？</div><div class="actions"><button id="draw" disabled>🎰 開始抽選</button><button id="redraw" class="outline" disabled>🔄 再抽一次</button></div><div id="result" class="result hidden"></div></section>
-<footer class="footer">資料來源：<a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors</a> · 使用 Overpass API / Nominatim 公共服務。<br>距離為直線距離；餐廳價格與營業資訊可能不完整，出發前請向店家確認。<br>網站不將定位儲存到自己的伺服器；查詢時會向第三方服務傳送搜尋座標。</footer>
+<footer class="footer">資料來源：臺北市政府餐館業登記清冊（使用者自行匯入）；<a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors</a> · 使用 Overpass API / Nominatim 公共服務。<br>距離為直線距離；餐廳價格與營業資訊可能不完整，出發前請向店家確認。<br>網站不將定位儲存到自己的伺服器；查詢時會向第三方服務傳送搜尋座標。</footer>
 </main>
 <script>
 'use strict';
@@ -62,6 +63,43 @@ const verifiedBackup=[
  {id:'tourism:Restaurant_376430000A_000016',name:'佳樂蛋糕',lat:24.99234,lon:121.31392,tags:{cuisine:'dessert', 'addr:city':'桃園市',note:'甜點／蛋糕店'},source:'觀光署餐飲公開資料（備援）'},
  {id:'tourism:Restaurant_376430000A_000018',name:'正記中崎本舖',lat:24.99551,lon:121.31033,tags:{cuisine:'dessert','addr:city':'桃園市',note:'甜點／糕點店'},source:'觀光署餐飲公開資料（備援）'}
 ];
+// Official Taipei City restaurant-business registration CSV, imported by user.
+// Source: https://data.gov.taipei/dataset/detail?id=178abc4e-fe32-4fc9-af3a-7baf1c15082c
+// This is a registration list, NOT proof of an operating restaurant.
+const IMPORT_KEY='foodRouletteTaipeiOfficialCSVv1';
+function importedRecords(){try{const v=JSON.parse(localStorage.getItem(IMPORT_KEY)||'[]');return Array.isArray(v)?v:[]}catch{return []}}
+function csvRows(str){
+ const rows=[];let row=[],field='',quoted=false;
+ str=str.replace(/^\uFEFF/,'');
+ for(let i=0;i<str.length;i++){const c=str[i];if(quoted){if(c==='"'&&str[i+1]==='"'){field+='"';i++}else if(c==='"')quoted=false;else field+=c}
+ else if(c==='"')quoted=true;else if(c===','){row.push(field);field=''}else if(c==='\n'||c==='\r'){if(c==='\r'&&str[i+1]==='\n')i++;row.push(field);if(row.some(x=>x.trim()))rows.push(row);row=[];field=''}else field+=c}
+ row.push(field);if(row.some(x=>x.trim()))rows.push(row);return rows;
+}
+function parseOfficialCSV(text){
+ const rows=csvRows(text);if(rows.length<2)throw Error('CSV 沒有可讀取的資料列');
+ const headers=rows[0].map(h=>h.trim().replace(/\s+/g,'').toLowerCase());
+ const idx=(names)=>headers.findIndex(h=>names.some(n=>h===n.toLowerCase()||h.includes(n.toLowerCase())));
+ const ni=idx(['商業名稱','公司名稱','名稱']), ai=idx(['商業地址','營業地址','地址']), lati=idx(['latitude','緯度']), loni=idx(['longitude','經度']), id=idx(['統一編號']);
+ if(ni<0||lati<0||loni<0)throw Error('欄位不符合官方清冊格式，需包含商業名稱、Longitude、Latitude');
+ const out=[];let invalid=0;
+ for(let i=1;i<rows.length;i++){
+  const r=rows[i],name=(r[ni]||'').trim(),lat=Number((r[lati]||'').trim()),lon=Number((r[loni]||'').trim()),addr=ai<0?'':(r[ai]||'').trim();
+  if(!name||!Number.isFinite(lat)||!Number.isFinite(lon)||lat<24.9||lat>25.3||lon<121.2||lon>121.75){invalid++;continue}
+  out.push({id:'taipei-reg:'+((id>=0&&r[id])?r[id].trim():i),name,lat,lon,tags:{'addr:full':addr,note:'餐館業登記資料（非營業查證）'},source:'臺北市政府餐館業登記清冊（未驗證營業）'});
+ }
+ if(!out.length)throw Error('未讀到有效台北市座標，請確認 CSV 是否正確');
+ return {out,invalid};
+}
+function importCount(){const n=importedRecords().length;$('importStatus').textContent=n?`已儲存 ${n} 筆台北市政府登記資料在本瀏覽器；不是實際營業保證。`:'尚未匯入官方餐飲資料。這不影響即時搜尋功能。'}
+$('importBtn').onclick=()=>$('csvFile').click();
+$('csvFile').onchange=async e=>{
+ const file=e.target.files?.[0];if(!file)return;
+ try{const text=await file.text(),{out,invalid}=parseOfficialCSV(text);localStorage.setItem(IMPORT_KEY,JSON.stringify(out));importCount();showStatus('importStatus',`成功匯入 ${out.length} 筆台北市登記業者（略過 ${invalid} 筆缺少名稱／有效座標的資料）。這些店家不保證仍營業，請先查證。`)}
+ catch(err){showStatus('importStatus','匯入失敗：'+err.message+'。請使用台北市政府提供的 CSV，或確認瀏覽器儲存空間。')}
+ finally{e.target.value=''}
+};
+$('clearImport').onclick=()=>{if(confirm('確定清除本瀏覽器匯入的官方資料？')){localStorage.removeItem(IMPORT_KEY);importCount()}};
+importCount();
 const CACHE_KEY='foodRouletteOSMCacheV3';
 function getCache(){try{const a=JSON.parse(localStorage.getItem(CACHE_KEY)||'[]');return Array.isArray(a)?a:[]}catch{return []}}
 function saveCache(items){try{const old=getCache(),map=new Map();for(const r of [...items,...old]){if(r&&r.id&&Number.isFinite(r.lat)&&Number.isFinite(r.lon))map.set(r.id,{id:r.id,name:r.name,lat:r.lat,lon:r.lon,tags:r.tags||{},source:'先前成功查詢的 OSM 快取'})}localStorage.setItem(CACHE_KEY,JSON.stringify([...map.values()].slice(0,3500)))}catch{}}
@@ -74,7 +112,7 @@ $('search').onclick=async()=>{
  // Smaller queries and output limit reduce public-server load; results may be incomplete in dense areas.
  const query=`[out:json][timeout:15];(node["amenity"="restaurant"]["name"](around:${radius},${lat},${lon});way["amenity"="restaurant"]["name"](around:${radius},${lat},${lon});relation["amenity"="restaurant"]["name"](around:${radius},${lat},${lon}););out center tags 600;`;
  const cached=nearbyRecords(getCache(),lat,lon,radius);
- const curated=nearbyRecords(verifiedBackup,lat,lon,radius);
+ const curated=nearbyRecords([...verifiedBackup,...importedRecords()],lat,lon,radius);
  const fallback=nearbyRecords([...cached,...curated],lat,lon,radius);
  if(fallback.length){
   restaurants=fallback;refresh();
@@ -95,7 +133,7 @@ $('search').onclick=async()=>{
    showStatus('searchStatus',live.length?`即時查詢成功：${live.length} 間餐廳；合併備援後共 ${restaurants.length} 間。資料來自 OSM，可能不完整。`:`即時查詢成功，但未找到有名稱的餐廳；${fallback.length?'已保留備援資料 '+fallback.length+' 筆。':'可擴大搜尋距離。'}`);
   }else{
    restaurants=fallback;
-   showStatus('searchStatus',fallback.length?`⚠️ 即時服務暫時無法使用，改用 ${fallback.length} 筆備援資料（瀏覽器快取 ${cached.length} 筆、公開地點 ${curated.length} 筆）。資料可能過期；公開備援地點可能是甜點店而非正餐餐廳。`:`⚠️ 即時服務暫時無法使用，附近 ${radius} 公尺內也沒有已儲存或核實的備援餐廳。請稍後重試；首次使用時不保證有資料。`);
+   showStatus('searchStatus',fallback.length?`⚠️ 即時服務暫時無法使用，改用 ${fallback.length} 筆備援資料（瀏覽器快取 ${cached.length} 筆、公開地點 ${curated.length} 筆）。資料可能過期；備援包含政府登記資料，不保證實際營業。`:`⚠️ 即時服務暫時無法使用，附近 ${radius} 公尺內也沒有已儲存或核實的備援餐廳。請稍後重試；可在下方匯入台北市政府官方 CSV 建立備援。`);
   }
   refresh();
  }catch(e){if(!fallback.length){restaurants=[];resetDraw()}showStatus('searchStatus','查詢處理失敗：'+e.message)}
