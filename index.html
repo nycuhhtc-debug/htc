@@ -10,18 +10,18 @@
 <body><header><h1>🍜 今天吃什麼？</h1><p>Food Roulette · 全台即時搜尋＋台北官方資料備援</p></header>
 <main class="wrap">
 <section class="panel"><h2>📍 1. 選擇搜尋位置</h2><div class="actions"><button id="gps">📍 使用目前位置</button><button id="manualMode" class="outline">🔎 手動搜尋地點</button><button id="taipeiStation" class="outline">🚉 測試：台北車站</button></div><div id="manual" class="hidden" style="margin-top:14px"><label for="place">輸入地址或地標</label><div class="row" style="margin-top:7px"><input id="place" placeholder="例如：台北車站、宜蘭火車站"><button id="findPlace">搜尋地點</button></div><div id="placeResults" style="margin-top:10px"></div></div><div id="locationStatus" class="status">尚未設定位置。請使用 GPS 或手動搜尋地點。</div></section>
-<section class="panel"><h2>🍽️ 2. 設定餐廳條件</h2><div class="grid"><div class="field"><label for="radius">搜尋距離</label><select id="radius"><option value="500">500 公尺</option><option value="1000" selected>1 公里</option><option value="2000">2 公里</option><option value="3000">3 公里</option><option value="5000">5 公里</option></select></div><div class="field"><label for="cuisine">料理類型</label><select id="cuisine"><option value="all">不限料理</option><option value="chinese">中式／台式</option><option value="japanese">日式</option><option value="korean">韓式</option><option value="western">西式</option><option value="hotpot">火鍋</option><option value="other">其他／未分類</option></select></div><div class="field"><label for="budget">預算（每人）</label><select id="budget"><option value="all">不限</option><option value="0-200">NT$200 以下</option><option value="201-400">NT$201–400</option><option value="401-800">NT$401–800</option><option value="801-999999">NT$801 以上</option></select></div><div class="field"><label for="open">營業狀態</label><select id="open"><option value="all">不限</option><option value="prefer">優先營業中（未知仍可抽）</option></select></div></div><p class="muted">預算與營業時間採彈性篩選：資料未知的餐廳仍可能入選，並會清楚標示。OpenStreetMap 的價格資料通常不完整。全台灣皆可搜尋；即時服務繁忙時，優先使用本瀏覽器先前搜尋成功的餐廳快取。如匯入台北市政府官方 CSV，即時服務失敗時仍可從附近的登記業者抽選；資料不保證目前營業。抽籤優先使用 OSM 餐廳；若沒有 OSM 資料才使用登記業者。</p><button id="search">🔍 搜尋附近餐廳</button><div id="searchStatus" class="status hidden" role="status"></div></section>
+<section class="panel"><h2>🍽️ 2. 設定餐廳條件</h2><div class="grid"><div class="field"><label for="radius">搜尋距離</label><select id="radius"><option value="500">500 公尺</option><option value="1000" selected>1 公里</option><option value="2000">2 公里</option><option value="3000">3 公里</option><option value="5000">5 公里</option></select></div><div class="field"><label for="cuisine">料理類型</label><select id="cuisine"><option value="all">不限料理</option><option value="chinese">中式／台式</option><option value="japanese">日式</option><option value="korean">韓式</option><option value="western">西式</option><option value="hotpot">火鍋</option><option value="other">其他／未分類</option></select></div><div class="field"><label for="budget">預算（每人）</label><select id="budget"><option value="all">不限</option><option value="0-200">NT$200 以下</option><option value="201-400">NT$201–400</option><option value="401-800">NT$401–800</option><option value="801-999999">NT$801 以上</option></select></div><div class="field"><label for="open">營業狀態</label><select id="open"><option value="all">不限</option><option value="prefer">優先營業中（未知仍可抽）</option></select></div></div><p class="muted">預算與營業時間採彈性篩選：資料未知的餐廳仍可能入選，並會清楚標示。料理類型優先依明確的 OSM 菜系標籤判斷；若找不到符合料理，可自行選擇「料理未知備選」或「不限料理」，不會把未知店家冒充指定料理。OpenStreetMap 的價格資料通常不完整。全台灣皆可搜尋；即時服務繁忙時，優先使用本瀏覽器先前搜尋成功的餐廳快取。如匯入台北市政府官方 CSV，即時服務失敗時仍可從附近的登記業者抽選；資料不保證目前營業。抽籤優先使用 OSM 餐廳；若沒有 OSM 資料才使用登記業者。</p><button id="search">🔍 搜尋附近餐廳</button><div id="cuisineFallback" class="status hidden" role="status"><span id="cuisineFallbackText"></span> <div class="actions" style="margin-top:8px"><button id="useUnknownCuisine" type="button" class="outline">從料理類型未知的店家抽選（不保證符合）</button><button id="relaxCuisine" type="button" class="outline">改成不限料理</button></div></div><div id="searchStatus" class="status hidden" role="status"></div></section>
 <section class="panel"><h2>🗂️ 台北市官方餐飲資料備援</h2><p class="muted">首次使用時，可下載臺北市政府「設址臺北市所營事業含餐館業清冊」CSV，再匯入一次。資料儲存在這台裝置的瀏覽器，之後即使 Overpass 故障，仍可從附近的登記業者抽選。<strong>注意：登記含餐館業不代表目前實際營業或有提供餐飲，出發前務必查證。</strong></p><div class="actions"><a class="btn" href="https://data.gov.tw/datasets/search?p=1&size=10&s=%E8%A8%AD%E5%9D%80%E8%87%BA%E5%8C%97%E5%B8%82%E6%89%80%E7%87%9F%E4%BA%8B%E6%A5%AD%E5%90%AB%E9%A4%90%E9%A4%A8%E6%A5%AD%E6%B8%85%E5%86%8A" target="_blank" rel="noopener">📥 下載台北市政府 CSV</a><button id="importBtn" type="button" class="outline">📂 匯入 CSV</button><button id="clearImport" type="button" class="outline">清除已匯入資料</button></div><input type="file" id="csvFile" accept=".csv,text/csv" class="hidden"><div id="importStatus" class="status">尚未匯入官方餐飲資料。這不影響即時搜尋功能。</div></section>
 <section class="panel"><h2>🎲 3. 幫我決定！</h2><p id="count" class="count">請先搜尋餐廳。</p><div id="roulette" class="roulette" aria-live="polite">今天想吃什麼？</div><div class="actions"><button id="draw" disabled>🎰 開始抽選</button><button id="redraw" class="outline" disabled>🔄 再抽一次</button></div><div id="result" class="result hidden"></div></section>
 <footer class="footer">資料來源：臺北市政府餐館業登記清冊（使用者自行匯入）；<a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors</a> · 使用 Overpass API / Nominatim 公共服務。<br>距離為直線距離；餐廳價格與營業資訊可能不完整，出發前請向店家確認。<br>網站不將定位儲存到自己的伺服器；查詢時會向第三方服務傳送搜尋座標。<div style="margin-top:9px;font-size:11px;color:#a99b90">中中餓餓 · 每天都在煩惱吃什麼</div></footer>
 </main>
 <script>
 'use strict';
-const $=id=>document.getElementById(id);let center=null,restaurants=[],lastId=null,busy=false;
+const $=id=>document.getElementById(id);let center=null,restaurants=[],lastId=null,busy=false,allowUnknownCuisine=false;
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const showStatus=(id,msg)=>{const el=$(id);el.classList.remove('hidden');el.textContent=msg};
 const setLocation=(lat,lon,name)=>{center={lat:Number(lat),lon:Number(lon),name};showStatus('locationStatus','📍 搜尋中心：'+name+'（'+Number(lat).toFixed(5)+', '+Number(lon).toFixed(5)+'）');restaurants=[];lastId=null;resetDraw()};
-function resetDraw(){ $('draw').disabled=true;$('redraw').disabled=true;$('result').classList.add('hidden');$('roulette').textContent='今天想吃什麼？';$('count').textContent='請先搜尋餐廳。' }
+function resetDraw(){allowUnknownCuisine=false; $('cuisineFallback').classList.add('hidden');$('draw').disabled=true;$('redraw').disabled=true;$('result').classList.add('hidden');$('roulette').textContent='今天想吃什麼？';$('count').textContent='請先搜尋餐廳。' }
 $('gps').onclick=()=>{if(!navigator.geolocation){showStatus('locationStatus','此瀏覽器不支援 GPS 定位。請手動搜尋地點。');return}showStatus('locationStatus','正在取得位置，請允許瀏覽器定位…');navigator.geolocation.getCurrentPosition(p=>setLocation(p.coords.latitude,p.coords.longitude,'我的目前位置'),e=>showStatus('locationStatus','定位失敗：'+({1:'未授權定位',2:'無法取得位置',3:'定位逾時'}[e.code]||e.message)+'。請使用手動搜尋。'),{enableHighAccuracy:true,timeout:12000,maximumAge:60000})};
 $('manualMode').onclick=()=>{$('manual').classList.toggle('hidden');$('place').focus()};
 $('taipeiStation').onclick=()=>{setLocation(25.04776,121.51706,'台北車站（測試位置）');$('radius').value='1000';$('cuisine').value='all';$('budget').value='all';$('open').value='all';showStatus('searchStatus','已切換台北車站，按「搜尋附近餐廳」即可測試匯入資料。')};
@@ -29,7 +29,13 @@ $('place').addEventListener('keydown',e=>{if(e.key==='Enter')$('findPlace').clic
 $('findPlace').onclick=async()=>{const q=$('place').value.trim();if(q.length<2){showStatus('locationStatus','請輸入至少兩個字的地點或地址。');return}const b=$('findPlace');b.disabled=true;$('placeResults').replaceChildren();showStatus('locationStatus','正在搜尋地點…');try{const url='https://nominatim.openstreetmap.org/search?format=jsonv2&limit=5&accept-language=zh-TW&q='+encodeURIComponent(q);const res=await fetch(url,{headers:{'Accept':'application/json'}});if(!res.ok)throw Error('地點搜尋服務回應 '+res.status);const data=await res.json();if(!data.length){showStatus('locationStatus','找不到這個地點，請輸入更完整的名稱或地址。');return}showStatus('locationStatus','請從下方搜尋結果選擇位置。');for(const item of data){const btn=document.createElement('button');btn.className='outline';btn.style.cssText='display:block;width:100%;text-align:left;margin:6px 0';btn.textContent=item.display_name;btn.onclick=()=>{setLocation(item.lat,item.lon,item.display_name);$('placeResults').replaceChildren()};$('placeResults').append(btn)}}catch(e){showStatus('locationStatus','地點搜尋失敗：'+e.message+'。公共服務可能暫時繁忙，請稍後重試。')}finally{b.disabled=false}};
 function distance(a,b,c,d){const r=6371000,rad=x=>x*Math.PI/180,x=rad(c-a),y=rad(d-b),z=Math.sin(x/2)**2+Math.cos(rad(a))*Math.cos(rad(c))*Math.sin(y/2)**2;return 2*r*Math.atan2(Math.sqrt(z),Math.sqrt(1-z))}
 const categories={chinese:['chinese','taiwanese','regional','cantonese','sichuan','dim_sum','noodle','asian'],japanese:['japanese','sushi','ramen','udon','soba','yakitori'],korean:['korean'],western:['italian','pizza','american','french','german','spanish','burger','steak_house','mediterranean','western'],hotpot:['hot_pot','hotpot','shabu_shabu','fondue']};
-function cuisineMatch(tags,selected){if(selected==='all')return true;const val=(tags.cuisine||'').toLowerCase().split(/[;,]/).map(s=>s.trim());const found=Object.values(categories).some(keys=>keys.some(k=>val.includes(k)));return selected==='other'?!found:categories[selected].some(k=>val.includes(k))}
+function cuisineMatch(tags,selected){
+ if(selected==='all')return true;
+ const val=(tags.cuisine||'').toLowerCase().split(/[;,]/).map(s=>s.trim()).filter(Boolean);
+ const found=Object.values(categories).some(keys=>keys.some(k=>val.includes(k)));
+ // 'other' requires an explicit cuisine tag; missing tags are UNKNOWN, not 'other'.
+ return selected==='other'?val.length>0&&!found:(categories[selected]||[]).some(k=>val.includes(k));
+}
 function parsePrice(tags){ // Only interpret explicit comparable numeric per-person amounts in TWD; other formats remain unknown.
  const candidates=[tags['price:per_person'],tags['charge:per_person']];for(const raw of candidates){if(!raw)continue;const s=String(raw).trim();const m=s.match(/^(?:NT\$|TWD\s*|\$)\s*(\d+(?:\.\d+)?)$/i);if(m)return Number(m[1])}return null}
 function budgetMatch(tags){const v=$('budget').value;if(v==='all')return true;const p=parsePrice(tags);if(p===null)return true;const [lo,hi]=v.split('-').map(Number);return p>=lo&&p<=hi}
@@ -37,9 +43,51 @@ function budgetMatch(tags){const v=$('budget').value;if(v==='all')return true;co
 const dayIndex={Mo:1,Tu:2,We:3,Th:4,Fr:5,Sa:6,Su:0};
 function simpleOpen(raw){if(!raw)return'unknown';const s=raw.trim();if(s==='24/7')return'open';if(/PH|SH|sunrise|sunset|week|\[|\]|\+|\bunknown\b/i.test(s))return'unknown';const now=new Date(),day=now.getDay(),mins=now.getHours()*60+now.getMinutes();let matched=false;const parts=s.split(';');for(const part of parts){const m=part.trim().match(/^(?:(Mo|Tu|We|Th|Fr|Sa|Su)(?:-(Mo|Tu|We|Th|Fr|Sa|Su))?(?:,(Mo|Tu|We|Th|Fr|Sa|Su))?\s+)?(\d\d:\d\d)-(\d\d:\d\d)$/);if(!m)return'unknown';const d1=m[1],d2=m[2],d3=m[3],start=m[4],end=m[5];const included=d=>!d1||d3?[...(!d1?[0,1,2,3,4,5,6]:[dayIndex[d1],dayIndex[d3]])].includes(d):d2?((dayIndex[d2]-dayIndex[d1]+7)%7>=((d-dayIndex[d1]+7)%7)):dayIndex[d1]===d;const a=Number(start.slice(0,2))*60+Number(start.slice(3)),b=Number(end.slice(0,2))*60+Number(end.slice(3));if(a>1440||b>1440)return'unknown';if(b>a){if(included(day)&&mins>=a&&mins<b)matched=true}else{if((included(day)&&mins>=a)||(included((day+6)%7)&&mins<b))matched=true}}return matched?'open':'closed'}
 function isOSM(r){return r.source==='OpenStreetMap 即時資料'||r.source==='先前成功查詢的 OSM 快取'||String(r.id||'').startsWith('node/')||String(r.id||'').startsWith('way/')||String(r.id||'').startsWith('relation/')}
-function candidates(){let pool=restaurants.filter(r=>cuisineMatch(r.tags,$('cuisine').value)&&budgetMatch(r.tags));if($('open').value==='prefer'){const opened=pool.filter(r=>simpleOpen(r.tags.opening_hours)==='open');pool=opened.length?opened:pool.filter(r=>simpleOpen(r.tags.opening_hours)==='unknown')}return pool}
-function refresh(){const pool=candidates();$('count').textContent=`已取得 ${restaurants.length} 筆附近地點（OSM 餐廳 ${restaurants.filter(isOSM).length} 筆、其他備援 ${restaurants.filter(r=>!isOSM(r)).length} 筆）；符合目前條件 ${pool.length} 筆。抽籤優先使用 OSM 餐廳，若沒有才使用未驗證登記資料。`;$('draw').disabled=!pool.length||busy;$('redraw').disabled=!pool.length||busy;$('result').classList.add('hidden');if(!pool.length)$('roulette').textContent='沒有符合條件的餐廳，請調整篩選。';else $('roulette').textContent='準備好抽餐廳了嗎？'}
-for(const id of ['cuisine','budget','open'])$(id).addEventListener('change',()=>{if(restaurants.length)refresh()});
+function applyOtherFilters(pool){
+ pool=pool.filter(r=>budgetMatch(r.tags||{}));
+ if($('open').value==='prefer'){
+  const opened=pool.filter(r=>simpleOpen((r.tags||{}).opening_hours)==='open');
+  pool=opened.length?opened:pool.filter(r=>simpleOpen((r.tags||{}).opening_hours)==='unknown');
+ }
+ return pool;
+}
+function cuisineUnknown(r){
+ const raw=String((r.tags||{}).cuisine||'').trim();
+ return !raw;
+}
+function confirmedCandidates(){
+ const selected=$('cuisine').value;
+ return applyOtherFilters(restaurants.filter(r=>cuisineMatch(r.tags||{},selected)));
+}
+function unknownCandidates(){return applyOtherFilters(restaurants.filter(cuisineUnknown));}
+function candidates(){
+ const confirmed=confirmedCandidates();
+ if($('cuisine').value==='all'||confirmed.length||!allowUnknownCuisine)return confirmed;
+ return unknownCandidates();
+}
+function refresh(){
+ const selected=$('cuisine').value;
+ const confirmed=confirmedCandidates(),unknown=selected==='all'?[]:unknownCandidates();
+ const useUnknown=selected!=='all'&&!confirmed.length&&allowUnknownCuisine&&unknown.length>0;
+ const pool=useUnknown?unknown:confirmed;
+ const noCuisineMatch=selected!=='all'&&!confirmed.length;
+ $('cuisineFallback').classList.toggle('hidden',!noCuisineMatch);
+ $('useUnknownCuisine').classList.toggle('hidden',!unknown.length||useUnknown);
+ if(noCuisineMatch){
+  const label=$('cuisine').selectedOptions[0]?.textContent||'指定料理';
+  $('cuisineFallbackText').textContent=useUnknown
+   ?`目前沒有確認符合「${label}」的店家，已由你選擇使用 ${unknown.length} 筆「料理類型未知」備選資料。這些店家不保證是指定料理，抽選後請先查證。`
+   :`目前沒有資料確認符合「${label}」的店家；另有 ${unknown.length} 筆料理類型未知的備選資料。你可自行選擇未知備選，或改成不限料理。`;
+ }
+ const description=selected==='all'?'不限料理':useUnknown?'使用料理未知備選（不保證符合）':`確認符合料理 ${confirmed.length} 筆；料理未知備選 ${unknown.length} 筆`;
+ $('count').textContent=`已取得 ${restaurants.length} 筆附近地點（OSM 餐廳 ${restaurants.filter(isOSM).length} 筆、其他備援 ${restaurants.filter(r=>!isOSM(r)).length} 筆）；目前可抽選 ${pool.length} 筆。${description}。優先抽選 OSM 餐廳，若沒有才使用未驗證登記資料。`;
+ $('draw').disabled=!pool.length||busy;$('redraw').disabled=!pool.length||busy;
+ $('result').classList.add('hidden');
+ $('roulette').textContent=!pool.length?'目前沒有符合條件的餐廳，請調整篩選。':'準備好抽餐廳了嗎？';
+}
+$('useUnknownCuisine').onclick=()=>{allowUnknownCuisine=true;refresh();$('count').scrollIntoView({behavior:'smooth',block:'center'})};
+$('relaxCuisine').onclick=()=>{allowUnknownCuisine=false;$('cuisine').value='all';refresh();$('count').scrollIntoView({behavior:'smooth',block:'center'})};
+for(const id of ['cuisine','budget','open'])$(id).addEventListener('change',()=>{allowUnknownCuisine=false;if(restaurants.length)refresh()});
 // Public Overpass instances can fail independently. Try alternative HTTPS endpoints.
 const overpassEndpoints=[
  'https://overpass-api.de/api/interpreter',
@@ -148,10 +196,33 @@ $('search').onclick=async()=>{
  finally{btn.disabled=false}
 };
 function address(t){return [t['addr:full'],[t['addr:city'],t['addr:district'],t['addr:street'],t['addr:housenumber']].filter(Boolean).join(' ')].find(Boolean)||'地址資料未知'}
-function render(r){const root=$('result');root.replaceChildren();const h=document.createElement('h3');h.textContent='🎉 '+r.name;root.append(h);const chips=document.createElement('div');chips.className='chips';for(const val of [r.tags.note||r.tags.cuisine||'料理類型未知',Math.round(r.meters)+' 公尺（直線距離）',r.source||'OSM']){const s=document.createElement('span');s.className='chip';s.textContent=val;chips.append(s)}root.append(chips);const price=parsePrice(r.tags),state=simpleOpen(r.tags.opening_hours);for(const line of ['📍 '+address(r.tags),'💰 '+(price===null?'價格未知':'約 NT$'+price+'／人（OSM 標示）'),'🕒 '+({open:'目前營業中（依 OSM 資料推算）',closed:'目前已打烊（依 OSM 資料推算）',unknown:'營業狀態未知'}[state])]){const p=document.createElement('p');p.className='info';p.textContent=line;root.append(p)}const link=document.createElement('a');link.className='btn';link.target='_blank';link.rel='noopener noreferrer';link.href='https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(r.lat+','+r.lon);link.textContent='🧭 Google Maps 導航（自行選交通方式）';root.append(link);
-const verify=document.createElement('a');verify.className='btn outline';verify.style.marginLeft='8px';verify.style.marginTop='8px';verify.target='_blank';verify.rel='noopener noreferrer';verify.href='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(r.name+' '+(address(r.tags)==='地址資料未知'?'':address(r.tags)));verify.textContent='🔎 Google Maps 查詢店家';root.append(verify);
-if(!isOSM(r)){const warning=document.createElement('p');warning.className='info';warning.style.color='#9a3412';warning.textContent='⚠️ 此筆來自登記／備援資料，尚未確認為實際可用餐的店家。請先透過 Google Maps 查證名稱、地址及營業狀態。';root.append(warning)}root.classList.remove('hidden')}
+function safeWebUrl(value){try{const u=new URL(/^https?:\/\//i.test(value)?value:'https://'+value);return ['https:','http:'].includes(u.protocol)?u.href:null}catch{return null}}
+function addInfo(root,label,value){if(!value)return;const p=document.createElement('p');p.className='info';p.textContent=label+' '+value;root.append(p)}
+function addExternal(root,label,url){if(!url)return;const a=document.createElement('a');a.className='btn outline';a.style.margin='8px 8px 0 0';a.href=url;a.target='_blank';a.rel='noopener noreferrer';a.textContent=label;root.append(a)}
+function render(r){
+ const root=$('result');root.replaceChildren();const t=r.tags||{};
+ const h=document.createElement('h3');h.textContent='🎉 '+r.name;root.append(h);
+ const chips=document.createElement('div');chips.className='chips';
+ for(const val of [t.cuisine||'料理類型未知（未經確認）',Math.round(r.meters)+' 公尺（直線距離）',r.source||'OSM']){const s=document.createElement('span');s.className='chip';s.textContent=val;chips.append(s)}root.append(chips);
+ if(allowUnknownCuisine&&$('cuisine').value!=='all'&&cuisineUnknown(r)){addInfo(root,'⚠️','本店料理類型未知，無法確認符合你選擇的料理；請先查證。')}
+ const price=parsePrice(t),state=simpleOpen(t.opening_hours);
+ addInfo(root,'📍',address(t));
+ addInfo(root,'💰',price===null?'價格未知':'約 NT$'+price+'／人（公開資料標示）');
+ addInfo(root,'🕒',({open:'目前營業中（依公開資料推算）',closed:'目前已打烊（依公開資料推算）',unknown:'營業狀態未知'}[state]));
+ if(t.opening_hours)addInfo(root,'📅 公開營業時間：',t.opening_hours);
+ if(t.description||t['description:zh']||t['description:zh-TW'])addInfo(root,'📝 店家介紹：',t['description:zh-TW']||t['description:zh']||t.description);
+ if(t['diet:vegetarian']==='yes'||t['diet:vegan']==='yes')addInfo(root,'🥬','有標示素食選項（請向店家確認）');
+ if(t.takeaway==='yes')addInfo(root,'🥡','公開資料標示提供外帶');
+ if(t.delivery==='yes')addInfo(root,'🛵','公開資料標示提供外送');
+ const phone=t['contact:phone']||t.phone;
+ if(phone){const tel=phone.replace(/[^+0-9]/g,'');if(tel)addExternal(root,'📞 撥打店家電話','tel:'+tel)}
+ addExternal(root,'🌐 店家官方網站',safeWebUrl(t['contact:website']||t.website||''));
+ addExternal(root,'🧭 Google Maps 導航（自行選交通方式）','https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(r.lat+','+r.lon));
+ addExternal(root,'🔎 Google Maps 查詢店家','https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(r.name+' '+(address(t)==='地址資料未知'?'':address(t))));
+ const note=document.createElement('p');note.className='info';note.style.color='#785a46';note.textContent='ℹ️ 本卡片資訊來自 OpenStreetMap 或公開備援資料，並非 Google Maps 評分或介紹；缺少的資料不會自行編造。';root.append(note);
+ if(!isOSM(r)){const warning=document.createElement('p');warning.className='info';warning.style.color='#9a3412';warning.textContent='⚠️ 此筆來自登記／備援資料，尚未確認為實際可用餐的店家。請先透過 Google Maps 查證名稱、地址及營業狀態。';root.append(warning)}
+ root.classList.remove('hidden')
+}
 async function draw(){const pool=candidates();if(!pool.length||busy)return;busy=true;$('draw').disabled=true;$('redraw').disabled=true;$('result').classList.add('hidden');const eligible=pool.length>1?pool.filter(r=>r.id!==lastId):pool;const osmEligible=eligible.filter(isOSM);const preferred=osmEligible.length?osmEligible:eligible;const chosen=preferred[Math.floor(Math.random()*preferred.length)];const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;if(!reduce){for(let i=0;i<19;i++){const item=preferred[Math.floor(Math.random()*preferred.length)];$('roulette').textContent=item.name;await sleep(55+i*13)}}$('roulette').textContent='🎉 '+chosen.name;lastId=chosen.id;render(chosen);busy=false;$('draw').disabled=false;$('redraw').disabled=false}
 $('draw').onclick=draw;$('redraw').onclick=draw;
 </script></body></html>
-<!-- Food Roulette redeploy 2026-10-20 -->
