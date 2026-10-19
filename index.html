@@ -154,3 +154,4 @@ if(!isOSM(r)){const warning=document.createElement('p');warning.className='info'
 async function draw(){const pool=candidates();if(!pool.length||busy)return;busy=true;$('draw').disabled=true;$('redraw').disabled=true;$('result').classList.add('hidden');const eligible=pool.length>1?pool.filter(r=>r.id!==lastId):pool;const osmEligible=eligible.filter(isOSM);const preferred=osmEligible.length?osmEligible:eligible;const chosen=preferred[Math.floor(Math.random()*preferred.length)];const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;if(!reduce){for(let i=0;i<19;i++){const item=preferred[Math.floor(Math.random()*preferred.length)];$('roulette').textContent=item.name;await sleep(55+i*13)}}$('roulette').textContent='🎉 '+chosen.name;lastId=chosen.id;render(chosen);busy=false;$('draw').disabled=false;$('redraw').disabled=false}
 $('draw').onclick=draw;$('redraw').onclick=draw;
 </script></body></html>
+<!-- Food Roulette redeploy 2026-10-20 -->
