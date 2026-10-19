@@ -36,7 +36,51 @@ function simpleOpen(raw){if(!raw)return'unknown';const s=raw.trim();if(s==='24/7
 function candidates(){let pool=restaurants.filter(r=>cuisineMatch(r.tags,$('cuisine').value)&&budgetMatch(r.tags));if($('open').value==='prefer'){const opened=pool.filter(r=>simpleOpen(r.tags.opening_hours)==='open');pool=opened.length?opened:pool.filter(r=>simpleOpen(r.tags.opening_hours)==='unknown')}return pool}
 function refresh(){const pool=candidates();$('count').textContent=`已取得 ${restaurants.length} 間附近餐廳，目前符合抽選條件 ${pool.length} 間。`;$('draw').disabled=!pool.length;$('redraw').disabled=!pool.length;$('result').classList.add('hidden');if(!pool.length)$('roulette').textContent='沒有符合條件的餐廳，請調整篩選。';else $('roulette').textContent='準備好抽餐廳了嗎？'}
 for(const id of ['cuisine','budget','open'])$(id).addEventListener('change',()=>{if(restaurants.length)refresh()});
-$('search').onclick=async()=>{if(!center){showStatus('searchStatus','請先使用 GPS 或手動搜尋設定位置。');return}const btn=$('search');btn.disabled=true;resetDraw();showStatus('searchStatus','正在搜尋附近餐廳，請稍候…');try{const radius=Number($('radius').value),{lat,lon}=center;const query=`[out:json][timeout:25];(nwr["amenity"="restaurant"](around:${radius},${lat},${lon}););out center tags;`;const endpoint='https://overpass.kumi.systems/api/interpreter';const ctl=new AbortController(),timer=setTimeout(()=>ctl.abort(),32000);let res;try{res=await fetch(endpoint,{method:'POST',body:new URLSearchParams({data:query}),signal:ctl.signal})}finally{clearTimeout(timer)}if(!res.ok)throw Error('餐廳資料服務回應 '+res.status);const json=await res.json();const seen=new Set();restaurants=(json.elements||[]).map(o=>{const x=o.lat??o.center?.lat,y=o.lon??o.center?.lon,t=o.tags||{};return{id:o.type+'/'+o.id,lat:x,lon:y,tags:t,name:t.name||t['name:zh']||t['name:en'],meters:distance(lat,lon,x,y)}}).filter(r=>{if(!r.name||!Number.isFinite(r.meters)||r.meters>radius)return false;const key=r.name.toLowerCase()+'|'+Math.round(r.lat*100000)+'|'+Math.round(r.lon*100000);if(seen.has(key))return false;seen.add(key);return true});showStatus('searchStatus',`搜尋完成！找到 ${restaurants.length} 間有名稱的餐廳。`);refresh()}catch(e){restaurants=[];refresh();showStatus('searchStatus','餐廳搜尋失敗：'+(e.name==='AbortError'?'連線逾時':e.message)+'。免費公共服務可能繁忙，請稍後重試。')}finally{btn.disabled=false}};
+// Public Overpass instances can fail independently. Try alternative HTTPS endpoints.
+const overpassEndpoints=[
+ 'https://overpass-api.de/api/interpreter',
+ 'https://overpass.kumi.systems/api/interpreter',
+ 'https://overpass.nchc.org.tw/api/interpreter'
+];
+async function overpassRequest(endpoint,query,timeoutMs=18000){
+ const ctl=new AbortController();const timer=setTimeout(()=>ctl.abort(),timeoutMs);
+ try{
+  // GET avoids some browser/preflight issues with cross-origin POST requests.
+  const url=endpoint+'?data='+encodeURIComponent(query);
+  const res=await fetch(url,{method:'GET',mode:'cors',headers:{Accept:'application/json'},signal:ctl.signal});
+  if(!res.ok)throw Error('HTTP '+res.status);
+  const data=await res.json();
+  if(!Array.isArray(data.elements))throw Error('資料格式異常');
+  return data;
+ }finally{clearTimeout(timer)}
+}
+$('search').onclick=async()=>{
+ if(!center){showStatus('searchStatus','請先使用 GPS 或手動搜尋設定位置。');return}
+ const btn=$('search');btn.disabled=true;resetDraw();restaurants=[];
+ try{
+  const radius=Number($('radius').value),{lat,lon}=center;
+  const query=`[out:json][timeout:20];nwr["amenity"="restaurant"](around:${radius},${lat},${lon});out center tags;`;
+  let json=null;const errors=[];
+  for(let i=0;i<overpassEndpoints.length;i++){
+   showStatus('searchStatus',`正在查詢附近餐廳（資料來源 ${i+1}/${overpassEndpoints.length}）…`);
+   try{json=await overpassRequest(overpassEndpoints[i],query);break}
+   catch(e){errors.push(overpassEndpoints[i].split('/')[2]+': '+(e.name==='AbortError'?'逾時':e.message));}
+  }
+  if(!json)throw Error(errors.join('；'));
+  const seen=new Set();
+  restaurants=json.elements.map(o=>{
+   const x=o.lat??o.center?.lat,y=o.lon??o.center?.lon,t=o.tags||{};
+   return{id:o.type+'/'+o.id,lat:x,lon:y,tags:t,name:t.name||t['name:zh']||t['name:en'],meters:distance(lat,lon,x,y)};
+  }).filter(r=>{
+   if(!r.name||!Number.isFinite(r.meters)||r.meters>radius)return false;
+   const key=r.name.toLowerCase()+'|'+Math.round(r.lat*100000)+'|'+Math.round(r.lon*100000);
+   if(seen.has(key))return false;seen.add(key);return true;
+  });
+  showStatus('searchStatus',restaurants.length?`搜尋完成！找到 ${restaurants.length} 間有名稱的餐廳。`:'查詢成功，但此範圍沒有找到已標記名稱的餐廳。可嘗試擴大距離。');
+  refresh();
+ }catch(e){restaurants=[];resetDraw();showStatus('searchStatus','餐廳資料服務暫時無法使用（已嘗試多個伺服器）。請稍後再試。技術資訊：'+e.message)}
+ finally{btn.disabled=false}
+};
 function address(t){return [t['addr:full'],[t['addr:city'],t['addr:district'],t['addr:street'],t['addr:housenumber']].filter(Boolean).join(' ')].find(Boolean)||'地址資料未知'}
 function render(r){const root=$('result');root.replaceChildren();const h=document.createElement('h3');h.textContent='🎉 '+r.name;root.append(h);const chips=document.createElement('div');chips.className='chips';for(const val of [r.tags.cuisine||'料理類型未知',Math.round(r.meters)+' 公尺（直線距離）']){const s=document.createElement('span');s.className='chip';s.textContent=val;chips.append(s)}root.append(chips);const price=parsePrice(r.tags),state=simpleOpen(r.tags.opening_hours);for(const line of ['📍 '+address(r.tags),'💰 '+(price===null?'價格未知':'約 NT$'+price+'／人（OSM 標示）'),'🕒 '+({open:'目前營業中（依 OSM 資料推算）',closed:'目前已打烊（依 OSM 資料推算）',unknown:'營業狀態未知'}[state])]){const p=document.createElement('p');p.className='info';p.textContent=line;root.append(p)}const link=document.createElement('a');link.className='btn';link.target='_blank';link.rel='noopener noreferrer';link.href='https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(r.lat+','+r.lon);link.textContent='🧭 Google Maps 導航';root.append(link);root.classList.remove('hidden')}
 async function draw(){const pool=candidates();if(!pool.length||busy)return;busy=true;$('draw').disabled=true;$('redraw').disabled=true;$('result').classList.add('hidden');const eligible=pool.length>1?pool.filter(r=>r.id!==lastId):pool;const chosen=eligible[Math.floor(Math.random()*eligible.length)];const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;if(!reduce){for(let i=0;i<19;i++){const item=pool[Math.floor(Math.random()*pool.length)];$('roulette').textContent=item.name;await sleep(55+i*13)}}$('roulette').textContent='🎉 '+chosen.name;lastId=chosen.id;render(chosen);busy=false;$('draw').disabled=false;$('redraw').disabled=false}
