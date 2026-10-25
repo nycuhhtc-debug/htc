@@ -163,7 +163,7 @@ $('search').onclick=async()=>{
  const radius=Number($('radius').value),{lat,lon}=center;
  // Prefer named restaurant nodes; including ways and relations needs center coordinates.
  // Smaller queries and output limit reduce public-server load; results may be incomplete in dense areas.
- const query=`[out:json][timeout:15];(node["amenity"="restaurant"]["name"](around:${radius},${lat},${lon});way["amenity"="restaurant"]["name"](around:${radius},${lat},${lon});relation["amenity"="restaurant"]["name"](around:${radius},${lat},${lon}););out center tags 600;`;
+ const query=`[out:json][timeout:30];(node["amenity"="restaurant"]["name"](around:${radius},${lat},${lon});way["amenity"="restaurant"]["name"](around:${radius},${lat},${lon});relation["amenity"="restaurant"]["name"](around:${radius},${lat},${lon}););out center tags 600;`;
  const cached=nearbyRecords(getCache(),lat,lon,radius);
  const imported=importedRecords();
  const curated=nearbyRecords([...verifiedBackup,...imported],lat,lon,radius);
@@ -174,11 +174,11 @@ $('search').onclick=async()=>{
   restaurants=fallback;refresh();
   showStatus('searchStatus',`已找到 ${fallback.length} 筆備援資料，可直接往下抽籤！${diagnostic}。背景正在更新即時資料…`);
  }
- const errors=[];let json=null;
+ const errors=[];let json=null;let successfulEndpoint="";
  try{
   for(let i=0;i<overpassEndpoints.length;i++){
    showStatus('searchStatus',`正在查詢即時資料（${i+1}/${overpassEndpoints.length}）…${fallback.length?'已有備援資料，可以直接抽籤。 ':''}${diagnostic}`);
-   try{json=await overpassRequest(overpassEndpoints[i],query,35000);break}
+   try{json=await overpassRequest(overpassEndpoints[i],query,35000);successfulEndpoint=new URL(overpassEndpoints[i]).hostname;break}
    catch(e){errors.push(overpassEndpoints[i].split('/')[2]+': '+(e.name==='AbortError'?'逾時':e.message));if(i<overpassEndpoints.length-1)await sleep(700)}
   }
   if(json){
@@ -186,10 +186,10 @@ $('search').onclick=async()=>{
    saveCache(raw);
    const live=nearbyRecords(raw,lat,lon,radius);
    restaurants=nearbyRecords([...live,...fallback],lat,lon,radius);
-   showStatus('searchStatus',live.length?`即時查詢成功：${live.length} 間餐廳；合併備援後共 ${restaurants.length} 間。資料來自 OSM，可能不完整。`:`即時查詢成功，但未找到有名稱的餐廳；${fallback.length?'已保留備援資料 '+fallback.length+' 筆。':'可擴大搜尋距離。'}`);
+   showStatus('searchStatus',(live.length?`✅ 即時查詢成功：${live.length} 間餐廳；合併備援後共 ${restaurants.length} 間。資料來自 OSM，可能不完整。`:`即時查詢成功，但未找到有名稱的餐廳；${fallback.length?'已保留備援資料 '+fallback.length+' 筆。':'可擴大搜尋距離。'}`)+` 使用伺服器：${successfulEndpoint}。`+(errors.length?` 先前嘗試：${errors.join('；')}。`:``));
   }else{
    restaurants=fallback;
-   showStatus('searchStatus',fallback.length?`⚠️ 即時服務暫時無法使用，已改用 ${fallback.length} 筆備援資料。${diagnostic}。備援包含政府登記資料，不保證實際營業。`:`⚠️ 即時服務暫時無法使用，且範圍內沒有備援資料。${diagnostic}。請確認搜尋中心；可點上方「測試：台北車站」，再搜尋一次。`);
+   showStatus('searchStatus',(fallback.length?`⚠️ 即時服務暫時無法使用，已改用 ${fallback.length} 筆備援資料。${diagnostic}。備援包含政府登記資料，不保證實際營業。`:`⚠️ 即時服務暫時無法使用，且範圍內沒有備援資料。${diagnostic}。請確認搜尋中心；可點上方「測試：台北車站」，再搜尋一次。`)+` 連線診斷：${errors.join('；')||'未取得錯誤詳情'}。`);
   }
   refresh();
  }catch(e){if(!fallback.length){restaurants=[];resetDraw()}showStatus('searchStatus','查詢處理失敗：'+e.message)}
